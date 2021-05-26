@@ -21,12 +21,12 @@ class interfaz:
         marco_categorias.grid(columnspan=2, padx=30, pady=10)
         self.cat_a = StringVar()
         self.cat_a.set('Seleccione - Categoría A')
-        dplist_a = OptionMenu(marco_categorias, self.cat_a, 'Seleccione', 'food' )
+        dplist_a = OptionMenu(marco_categorias, self.cat_a, 'Seleccione')
         dplist_a.config(width=25)
         dplist_a.grid(row=0, pady=5)
         self.cat_b = StringVar()
         self.cat_b.set('Seleccione - Categoría B')
-        self.dplist_b = OptionMenu(marco_categorias, self.cat_b, 'Seleccione', 'food' )
+        self.dplist_b = OptionMenu(marco_categorias, self.cat_b, 'Seleccione')
         self.dplist_b.config(width=25)
         self.dplist_b.grid(row=1, pady=5)
 
@@ -38,7 +38,7 @@ class interfaz:
         Entry(marco_campos, textvariable = self.amount).grid(row=0, column=1)
         self.description = StringVar()
         Label(marco_campos, text='Descripción').grid(row=1, column=0)
-        self.description = Entry(marco_campos, textvariable = self.description).grid(row=1, column=1)
+        Entry(marco_campos, textvariable = self.description).grid(row=1, column=1)
 
     def configurar_operacion(self):
         marco_operacion = Frame(self.ventana)
@@ -78,17 +78,12 @@ class interfaz:
         Button(marco_enviar, text='Enviar', command=self.recuperar_datos).grid(row=0, column=1)
     
     def recuperar_datos(self):
-        categoria_a = self.cat_a.get()
-        categoria_b = self.cat_b.get()
-        cantidad = float(self.amount.get())
-        descripcion = self.description.get()
-        movimiento = self.opcion.get()
         return (
-            categoria_a,
-            categoria_b,
-            cantidad,
-            descripcion,
-            movimiento,
+            self.cat_a.get(),
+            self.cat_b.get(),
+            self.amount.get(),
+            self.description.get(),
+            self.opcion.get()
             )
 
     def ejecutar_ventana(self):
