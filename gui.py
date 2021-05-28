@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-from typing import Tuple
 from operations import *
 from budget import *
 
@@ -14,7 +13,9 @@ class interfaz:
     def configurar_ventana(self):
         ventana = Tk()
         self.str_categoria_a = StringVar()
+        self.str_categoria_b = StringVar()
         self.str_categoria_a.set('Seleccione')
+        self.str_categoria_b.set('Seleccione')
         #self.str_categoria_a.trace('w', self.opcion_selecc)
         ventana.title(self.title)
         ventana.geometry(self.geometry)
@@ -38,9 +39,9 @@ class interfaz:
         self.dplist_a.grid(row=1, pady=5)
         self.label_b = Label(marco_categorias, text='Categoría destino')
         self.label_b.grid(row=2, sticky=W)
-        self.cat_b = StringVar()
-        self.cat_b.set('Seleccione - Categoría B')
-        self.dplist_b = OptionMenu(marco_categorias, self.cat_b, 'Seleccione', 'comida', 'servicios')
+        #self.cat_b = StringVar()
+        #self.cat_b.set('Seleccione - Categoría B')
+        self.dplist_b = OptionMenu(marco_categorias, self.str_categoria_b, ())
         self.dplist_b.config(width=25)
         self.dplist_b.grid(row=3, pady=5)
 
@@ -121,12 +122,15 @@ class interfaz:
             ).grid(row=0, column=0, sticky=W)
     
     def recuperar_datos(self):
-        self.categoria_a = self.cat_a.get()
-        self.categoria_b = self.cat_b.get()
+        #obtener los campos del formulario
+        self.categoria_a = self.str_categoria_a.get()
+        self.categoria_b = self.str_categoria_b.get()
         self.cantidad = float(self.amount.get())
         self.descripcion = self.description.get()
         self.operacion = self.opcion.get()
-        realizar_operacion(
+        #limpiar campos
+        #llamada a operations.py realizar operacion()
+        btn_operacion = realizar_operacion(
             self.operacion,
             self.cantidad,
             self.descripcion,
@@ -136,18 +140,19 @@ class interfaz:
         
     def crear_categoria(self):
         self.nueva_categoria = self.nueva_cat.get()
+        self.nueva_cat.set('') #borrar campo
+        #agregar objeto categoria al diccionario con nombre como llave
         if self.nueva_categoria not in list(self.categorias.keys()):
             self.categorias[self.nueva_categoria] = categoria(self.nueva_categoria)
-
-        print(self.categorias)
-
-        menu = self.dplist_a['menu']
-        menu.delete(0, 'end')
+        
+        #actualizar las listas desplegables de categorias
+        menu_a = self.dplist_a['menu']
+        menu_b = self.dplist_b['menu']
+        menu_a.delete(0, 'end')
+        menu_b.delete(0, 'end')
         for catg in list(self.categorias.keys()):
-            menu.add_command(label=catg, command=lambda value=catg: self.str_categoria_a.set(catg))
-
-        #self.lista_categorias = [StringVar(m) for m in self.categorias.keys()]
-        return True
+            menu_a.add_command(label=catg, command=lambda value=catg: self.str_categoria_a.set(catg))
+            menu_b.add_command(label=catg, command=lambda value=catg: self.str_categoria_b.set(catg))
 
     def ejecutar_ventana(self):
         self.ventana.mainloop()
