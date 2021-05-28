@@ -1,33 +1,33 @@
-class category():
-    def __init__(self, name):
-        self.name = name
-        self.ledger = []
+class categoria():
+    def __init__(self, nombre):
+        self.nombre = nombre
+        self.registro = []
     
-    def deposit(self, amount, description=''):
-        self.ledger.append({'amount':amount, 'description': description})
+    def deposito(self, cantidad, descripcion=''):
+        self.registro.append({'cantidad':cantidad, 'descripcion': descripcion})
 
-    def withdraw(self, amount, description=''):
-        if self.check_funds(amount):
-            self.ledger.append({'amount': -1*amount, 'description': description})
+    def retiro(self, cantidad, descripcion=''):
+        if self.verificar_fondos(cantidad):
+            self.registro.append({'cantidad': -1*cantidad, 'descripcion': descripcion})
             return True
         else:
             return False
 
-    def get_balance(self):
+    def obtener_balance(self):
         balance = 0
-        for movements in self.ledger:
-            balance += movements['amount']
+        for movimiento in self.registro:
+            balance += movimiento['cantidad']
         return balance
 
-    def check_funds(self, amount):
-        return False if amount > self.get_balance() else True
+    def verificar_fondos(self, cantidad):
+        return False if cantidad > self.obtener_balance() else True
     
-    def transfer(self, amount, transfer_to):
-        description = f'Transfer to {transfer_to.name}'
-        successful_transfer = self.withdraw(amount, description)
-        if successful_transfer:
-            description = f'Transfer from {self.name}'
-            transfer_to.deposit(amount, description)
+    def transferir(self, cantidad, transferir_to):
+        descripcion = f'transferir to {transferir_to.nombre}'
+        successful_transferir = self.retiro(cantidad, descripcion)
+        if successful_transferir:
+            descripcion = f'transferir from {self.nombre}'
+            transferir_to.deposito(cantidad, descripcion)
             return True
         else:
             return False
@@ -35,27 +35,27 @@ class category():
 if __name__ == '__main__':
     
     #crear categoria de comida y agregar depositos y retiros
-    food = category('food')
-    food.deposit(200, 'deposit 1')
-    food.deposit(350, 'deposit 2')
-    food.withdraw(100, 'sandwich')
+    food = categoria('food')
+    food.deposito(200, 'deposito 1')
+    food.deposito(350, 'deposito 2')
+    food.retiro(100, 'sandwich')
 
     #imprimir balance de la categoria comida
     print('Balance categoría food: ', end='')
-    print(food.get_balance())
+    print(food.obtener_balance())
 
     #verificar si se cuenta con una cantidad de 400 disponible
     print('400 disponibles?: ', end='')
-    print(food.check_funds(400))
+    print(food.verificar_fondos(400))
 
     #crear categoría de ropa
-    clothes = category('clothes')
+    clothes = categoria('clothes')
 
     #realizar transferencia a 'ropa' desde 'comida'
-    food.transfer(300, clothes) 
+    food.transferir(300, clothes) 
 
     #mostrar libro mayor de 'ropa'
-    print(clothes.ledger)
+    print(clothes.registro)
 
     #consultar última transacción de 'comida' en el libro mayor
-    print(food.ledger[-1])
+    print(food.registro[-1])
