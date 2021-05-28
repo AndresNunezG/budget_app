@@ -8,5 +8,5 @@ if __name__ == '__main__':
     ventana.configurar_campos()
     ventana.configurar_operacion()
     ventana.configurar_enviar()
-    ventana.configurar_area()
+    ventana.configurar_panel_registros()
     ventana.ejecutar_ventana()

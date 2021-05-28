@@ -1,11 +1,12 @@
 from tkinter import *
+from tkinter import ttk
 from operations import *
 from budget import *
 
 class interfaz:
     def __init__(self):
         self.title = 'Budget'
-        self.geometry = '350x500'
+        self.geometry = '350x600'
         self.resizable = False 
         self.categorias = {}
 
@@ -80,19 +81,31 @@ class interfaz:
             command=operacion_seleccionada
             ).grid(row=2, sticky=W)
 
-    def configurar_area(self):
-        marco_area = Frame(self.ventana)
-        marco_area.grid(column=0 ,columnspan=2)
-        self.area_texto = Text(marco_area)
-        self.area_texto.config(width=40, height=10, state='disabled')
-        self.area_texto.grid(column=0, columnspan=2, pady=10)
+    def configurar_panel_registros(self):
+        marco_registros = Frame(self.ventana)
+        marco_registros.grid(columnspan=2, padx=10, pady=10)
+        tabla_registros = ttk.Treeview(marco_registros)
+        tabla_registros['columns'] = ('Cantidad', 'Descripción')
+        tabla_registros.column('#0', width=0, stretch=NO)
+        tabla_registros.column('Cantidad', anchor=W, width=145)
+        tabla_registros.column('Descripción', anchor=W, width=145)
+        tabla_registros.heading('#0', text='', anchor=W)
+        tabla_registros.heading('Cantidad', text='Cantidad', anchor=W)
+        tabla_registros.heading('Descripción', text='Descripcion', anchor=W)
+        tabla_registros.pack()
+    
+    def configurar_crear_categoria(self):
+        marco_crear_cat = Frame(self.ventana)
+        marco_crear_cat.grid(columnspan=2)
+        return True
 
     def configurar_enviar(self):
         marco_enviar = Frame(self.ventana)
         marco_enviar.grid(columnspan=2)
         Button(marco_enviar,
             text='Hecho',
-            command=lambda:[self.recuperar_datos()]).grid(row=0, column=1)
+            command=lambda:[self.recuperar_datos()],
+            ).grid(row=0, column=1)
     
     def recuperar_datos(self):
         self.categoria_a = self.cat_a.get()
@@ -118,5 +131,5 @@ if __name__ == '__main__':
     ventana.configurar_campos()
     ventana.configurar_operacion()
     ventana.configurar_enviar()
-    ventana.configurar_area()
+    ventana.configurar_panel_registros()
     ventana.ejecutar_ventana()
