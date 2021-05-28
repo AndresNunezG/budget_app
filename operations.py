@@ -14,6 +14,9 @@ def realizar_operacion(operacion, cantidad, descripcion, cat_a, cat_b, dict_cate
     elif operacion == 2:
         cat_a_obj.retiro(cantidad, descripcion)
     elif operacion == 3:
-        cat_a_obj.transferir(cantidad, cat_b)
+        if cat_a_obj.nombre == cat_b_obj.nombre:
+            return False
+        else:
+            cat_a_obj.transferir(cantidad, cat_b)
     print(cat_a_obj.registro)
     return True
