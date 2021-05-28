@@ -8,15 +8,20 @@ def realizar_operacion(operacion, cantidad, descripcion, cat_a, cat_b, dict_cate
 
     cat_a_obj = dict_categorias[cat_a]
     cat_b_obj = dict_categorias[cat_b]
-
+    
     if operacion == 1:
         cat_a_obj.deposito(cantidad, descripcion)
+        print(cat_a_obj.registro)
+        return True
     elif operacion == 2:
-        cat_a_obj.retiro(cantidad, descripcion)
+        alerta_retiro = cat_a_obj.retiro(cantidad, descripcion)
+        return alerta_retiro
     elif operacion == 3:
-        if cat_a_obj.nombre == cat_b_obj.nombre:
-            return False
+        alerta_transferencia = ''
+        if cat_a_obj == cat_b_obj:
+            alerta_operacion = 'catg_igual'
+            return alerta_operacion
         else:
-            cat_a_obj.transferir(cantidad, cat_b)
-    print(cat_a_obj.registro)
-    return True
+            cat_a_obj.transferir(cantidad, cat_b_obj)
+            print(cat_a_obj.registro)
+            print(cat_b_obj.registro)

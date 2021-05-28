@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox as msbx
 from operations import *
 from budget import *
 
@@ -16,7 +17,8 @@ class interfaz:
         self.str_categoria_b = StringVar()
         self.str_categoria_a.set('Seleccione')
         self.str_categoria_b.set('Seleccione')
-        #self.str_categoria_a.trace('w', self.opcion_selecc)
+        self.str_categoria_a.trace('w', self.opcion_selecc)
+        self.str_categoria_b.trace('w', self.opcion_selecc)
         ventana.title(self.title)
         ventana.geometry(self.geometry)
         if not self.resizable:
@@ -34,7 +36,7 @@ class interfaz:
         Label(marco_categorias, text='Categoría').grid(row=0, sticky=W)
         #self.cat_a = StringVar()
         #self.cat_a.set('Seleccione - Categoría A')
-        self.dplist_a = OptionMenu(marco_categorias, self.str_categoria_a, ())
+        self.dplist_a = OptionMenu(marco_categorias, self.str_categoria_a, (), command=self.crear_categoria)
         self.dplist_a.config(width=25)
         self.dplist_a.grid(row=1, pady=5)
         self.label_b = Label(marco_categorias, text='Categoría destino')
@@ -70,7 +72,7 @@ class interfaz:
         Radiobutton(
             marco_operacion,
             text='Deposito',
-            value= 1,
+            value=1,
             variable=self.opcion,
             command=operacion_seleccionada
             ).grid(row=0, sticky=W)
@@ -110,7 +112,10 @@ class interfaz:
         Label(marco_crear_cat, text='Crear Categoría').grid(sticky=W)
         self.nueva_cat = StringVar()
         Entry(marco_crear_cat, textvariable=self.nueva_cat).grid(row=1, column=0, sticky=W)
-        Button(marco_crear_cat, text='Crear', command=self.crear_categoria).grid(row=1, column=1, sticky=N)
+        Button(marco_crear_cat,
+            text='Crear',
+            command= self.crear_categoria,
+            ).grid(row=1, column=1, sticky=N)
 
     def configurar_enviar(self):
         marco_enviar = Frame(self.ventana)
@@ -129,6 +134,8 @@ class interfaz:
         self.descripcion = self.description.get()
         self.operacion = self.opcion.get()
         #limpiar campos
+        self.amount.set('')
+        self.description.set('')
         #llamada a operations.py realizar operacion()
         btn_operacion = realizar_operacion(
             self.operacion,
@@ -137,14 +144,19 @@ class interfaz:
             self.categoria_a,
             self.categoria_b,
             self.categorias)
-        
+        if btn_operacion == 'catg_igual':
+            self.mensaje_alerta(alerta=btn_operacion)
+        if btn_operacion is False:
+            self.mensaje_alerta(alerta=btn_operacion)
+        if btn_operacion:
+            self.mensaje_alerta(alerta=btn_operacion)
+    
     def crear_categoria(self):
         self.nueva_categoria = self.nueva_cat.get()
         self.nueva_cat.set('') #borrar campo
         #agregar objeto categoria al diccionario con nombre como llave
-        if self.nueva_categoria not in list(self.categorias.keys()):
+        if self.nueva_categoria != '' and self.nueva_categoria not in list(self.categorias.keys()):
             self.categorias[self.nueva_categoria] = categoria(self.nueva_categoria)
-        
         #actualizar las listas desplegables de categorias
         menu_a = self.dplist_a['menu']
         menu_b = self.dplist_b['menu']
@@ -153,6 +165,14 @@ class interfaz:
         for catg in list(self.categorias.keys()):
             menu_a.add_command(label=catg, command=lambda value=catg: self.str_categoria_a.set(catg))
             menu_b.add_command(label=catg, command=lambda value=catg: self.str_categoria_b.set(catg))
+
+    def mensaje_alerta(self, alerta):
+        if alerta == 'catg_igual':
+            msbx.showwarning('Operación rechazada', 'Transferencia entre categorías iguales')
+        if alerta is False:
+            msbx.showwarning('Operación rechazada', 'Fondos insuficientes')
+        if alerta is True:
+            msbx.showinfo('Operación Exitosa', 'Deposito realizado con exito')
 
     def ejecutar_ventana(self):
         self.ventana.mainloop()
