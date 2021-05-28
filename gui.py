@@ -1,17 +1,21 @@
 from tkinter import *
 from tkinter import ttk
+from typing import Tuple
 from operations import *
 from budget import *
 
 class interfaz:
     def __init__(self):
         self.title = 'Budget'
-        self.geometry = '350x600'
+        self.geometry = '710x410'
         self.resizable = False 
         self.categorias = {}
 
     def configurar_ventana(self):
         ventana = Tk()
+        self.str_categoria_a = StringVar()
+        self.str_categoria_a.set('Seleccione')
+        #self.str_categoria_a.trace('w', self.opcion_selecc)
         ventana.title(self.title)
         ventana.geometry(self.geometry)
         if not self.resizable:
@@ -19,16 +23,19 @@ class interfaz:
         else:
             ventana.resizable(1, 1)
         self.ventana = ventana
+    
+    def opcion_selecc(self, *args):
+        print(self.str_categoria_a.get())
 
     def configurar_categorias(self):
         marco_categorias = Frame(self.ventana)
         marco_categorias.grid(columnspan=2, padx=30, pady=10)
         Label(marco_categorias, text='Categoría').grid(row=0, sticky=W)
-        self.cat_a = StringVar()
-        self.cat_a.set('Seleccione - Categoría A')
-        dplist_a = OptionMenu(marco_categorias, self.cat_a, 'Seleccione', 'comida', 'servicios')
-        dplist_a.config(width=25)
-        dplist_a.grid(row=1, pady=5)
+        #self.cat_a = StringVar()
+        #self.cat_a.set('Seleccione - Categoría A')
+        self.dplist_a = OptionMenu(marco_categorias, self.str_categoria_a, ())
+        self.dplist_a.config(width=25)
+        self.dplist_a.grid(row=1, pady=5)
         self.label_b = Label(marco_categorias, text='Categoría destino')
         self.label_b.grid(row=2, sticky=W)
         self.cat_b = StringVar()
@@ -83,21 +90,26 @@ class interfaz:
 
     def configurar_panel_registros(self):
         marco_registros = Frame(self.ventana)
-        marco_registros.grid(columnspan=2, padx=10, pady=10)
-        tabla_registros = ttk.Treeview(marco_registros)
-        tabla_registros['columns'] = ('Cantidad', 'Descripción')
+        marco_registros.grid(row = 0, column=2, rowspan=10, columnspan=2, padx=10, pady=30)
+        tabla_registros = ttk.Treeview(marco_registros, height=14)
+        tabla_registros['columns'] = ('Categoría', 'Cantidad', 'Descripción')
         tabla_registros.column('#0', width=0, stretch=NO)
-        tabla_registros.column('Cantidad', anchor=W, width=145)
-        tabla_registros.column('Descripción', anchor=W, width=145)
+        tabla_registros.column('Categoría', anchor=W, width=110)
+        tabla_registros.column('Cantidad', anchor=W, width=110)
+        tabla_registros.column('Descripción', anchor=W, width=110)
         tabla_registros.heading('#0', text='', anchor=W)
+        tabla_registros.heading('Categoría', text='Categoría', anchor=W)
         tabla_registros.heading('Cantidad', text='Cantidad', anchor=W)
         tabla_registros.heading('Descripción', text='Descripcion', anchor=W)
         tabla_registros.pack()
     
     def configurar_crear_categoria(self):
         marco_crear_cat = Frame(self.ventana)
-        marco_crear_cat.grid(columnspan=2)
-        return True
+        marco_crear_cat.grid(column = 0, columnspan=2, padx=10, pady=10)
+        Label(marco_crear_cat, text='Crear Categoría').grid(sticky=W)
+        self.nueva_cat = StringVar()
+        Entry(marco_crear_cat, textvariable=self.nueva_cat).grid(row=1, column=0, sticky=W)
+        Button(marco_crear_cat, text='Crear', command=self.crear_categoria).grid(row=1, column=1, sticky=N)
 
     def configurar_enviar(self):
         marco_enviar = Frame(self.ventana)
@@ -105,7 +117,8 @@ class interfaz:
         Button(marco_enviar,
             text='Hecho',
             command=lambda:[self.recuperar_datos()],
-            ).grid(row=0, column=1)
+            width=18
+            ).grid(row=0, column=0, sticky=W)
     
     def recuperar_datos(self):
         self.categoria_a = self.cat_a.get()
@@ -120,6 +133,21 @@ class interfaz:
             self.categoria_a,
             self.categoria_b,
             self.categorias)
+        
+    def crear_categoria(self):
+        self.nueva_categoria = self.nueva_cat.get()
+        if self.nueva_categoria not in list(self.categorias.keys()):
+            self.categorias[self.nueva_categoria] = categoria(self.nueva_categoria)
+
+        print(self.categorias)
+
+        menu = self.dplist_a['menu']
+        menu.delete(0, 'end')
+        for catg in list(self.categorias.keys()):
+            menu.add_command(label=catg, command=lambda value=catg: self.str_categoria_a.set(catg))
+
+        #self.lista_categorias = [StringVar(m) for m in self.categorias.keys()]
+        return True
 
     def ejecutar_ventana(self):
         self.ventana.mainloop()
@@ -132,4 +160,5 @@ if __name__ == '__main__':
     ventana.configurar_operacion()
     ventana.configurar_enviar()
     ventana.configurar_panel_registros()
+    ventana.configurar_crear_categoria()
     ventana.ejecutar_ventana()
