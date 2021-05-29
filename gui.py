@@ -94,17 +94,17 @@ class interfaz:
     def configurar_panel_registros(self):
         marco_registros = Frame(self.ventana)
         marco_registros.grid(row = 0, column=2, rowspan=10, columnspan=2, padx=10, pady=30)
-        tabla_registros = ttk.Treeview(marco_registros, height=14)
-        tabla_registros['columns'] = ('Categoría', 'Cantidad', 'Descripción')
-        tabla_registros.column('#0', width=0, stretch=NO)
-        tabla_registros.column('Categoría', anchor=W, width=110)
-        tabla_registros.column('Cantidad', anchor=W, width=110)
-        tabla_registros.column('Descripción', anchor=W, width=110)
-        tabla_registros.heading('#0', text='', anchor=W)
-        tabla_registros.heading('Categoría', text='Categoría', anchor=W)
-        tabla_registros.heading('Cantidad', text='Cantidad', anchor=W)
-        tabla_registros.heading('Descripción', text='Descripcion', anchor=W)
-        tabla_registros.pack()
+        self.tabla_registros = ttk.Treeview(marco_registros, height=14)
+        self.tabla_registros['columns'] = ('Categoría', 'Cantidad', 'Descripción')
+        self.tabla_registros.column('#0', width=0, stretch=NO)
+        self.tabla_registros.column('Categoría', anchor=W, width=110)
+        self.tabla_registros.column('Cantidad', anchor=W, width=110)
+        self.tabla_registros.column('Descripción', anchor=W, width=110)
+        self.tabla_registros.heading('#0', text='', anchor=W)
+        self.tabla_registros.heading('Categoría', text='Categoría', anchor=W)
+        self.tabla_registros.heading('Cantidad', text='Cantidad', anchor=W)
+        self.tabla_registros.heading('Descripción', text='Descripcion', anchor=W)
+        self.tabla_registros.pack()
     
     def configurar_crear_categoria(self):
         marco_crear_cat = Frame(self.ventana)
@@ -150,7 +150,8 @@ class interfaz:
             self.mensaje_alerta(alerta=btn_operacion)
         if btn_operacion:
             self.mensaje_alerta(alerta=btn_operacion)
-    
+        self.actualizar_tabla()
+
     def crear_categoria(self):
         self.nueva_categoria = self.nueva_cat.get()
         self.nueva_cat.set('') #borrar campo
@@ -173,6 +174,21 @@ class interfaz:
             msbx.showwarning('Operación rechazada', 'Fondos insuficientes')
         if alerta is True:
             msbx.showinfo('Operación Exitosa', 'Deposito realizado con exito')
+    
+    def actualizar_tabla(self):
+        if (self.operacion == 2) or (self.operacion == 3):
+            self.tabla_registros.insert(
+                '',
+                0,
+                text='Categoría',
+                values=(self.categoria_a, '-' + str(self.cantidad), self.descripcion))
+        if self.operacion == 1:
+            self.tabla_registros.insert(
+                '',
+                0,
+                text='Categoría',
+                values=(self.categoria_a, self.cantidad, self.descripcion)
+            )
 
     def ejecutar_ventana(self):
         self.ventana.mainloop()
