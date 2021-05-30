@@ -3,8 +3,12 @@
 ### 💬 Feel free of do some pull requests or any kind of contribution
 ### Haz la contribución o pregunta que desees!
 
+#### 📱 💵 Interfaz principal
 ![Transferencia](/imgs_readme/img_transferencia.png)
+#### ℹ️ Notificación de depósito exitoso
 ![Notificación depósito](/imgs_readme/img_notificacion_deposito.png)
+#### ⚠️ Error en la transferencia
+Ocasionada por falta de fondos o transferencia entre categorías iguales 
 ![Error en la transferencia](/imgs_readme/img_error_transferencia.png)
 
 ## 📂 Documentos
